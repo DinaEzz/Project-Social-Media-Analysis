@@ -1,0 +1,28 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+ 
+int main() {
+long n, m;
+	//n->number of nodes
+	//m->number of edges
+	cin >> n >> m;
+	vector<vector<int> > adj_list(n, vector<int>());
+	int a, b, c;
+	//to input
+	for (long i = 0; i<m; i++)
+    {
+            //a -> beginning edge
+            //b -> ending edge
+            //c -> weight of path
+		cin >> a >> b >> c;
+		adj_list[a].push_back(b);   //pushing the beginning node
+		adj_list[b].push_back(a);   //pushing the ending node
+	}
+	//to output the length of each path which begin with 'i'
+	for (int i = 0; i < n; i++)
+    {
+		cout << adj_list[i].size() << '\n';
+	}
+	return 0;
+}
