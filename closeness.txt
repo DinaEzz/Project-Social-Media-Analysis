@@ -1,0 +1,99 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <list>
+#include <algorithm>
+#include <iterator>
+#include <utility>
+#include <iomanip>
+#include <functional>
+# define INF 1e9 
+using namespace std;
+//vector <vector <pair <int, int> > > adj_list1(n_nodes, vector <pair <int, int> >());
+vector <int> shortest_path(int src, vector <vector <pair <int, int> > > adj_list)
+{
+ 
+	priority_queue < pair <int, pair <int, int> >,
+		vector < pair <int, pair <int, int> > >,
+		greater < pair <int, pair <int, int> > > > nodes_q;
+ 
+	int n = adj_list.size();
+	vector<int> d(n, INF);
+	vector<int> p(n, -1);
+ 
+	nodes_q.push({ 0,{ src, src } });
+	while (!nodes_q.empty())
+	{
+		pair <int, pair <int, int> > p1 = nodes_q.top();
+		nodes_q.pop();
+		int cur_node = p1.second.first;
+		int cur_prev_node = p1.second.second;
+		int cur_dis = p1.first;
+ 
+		if (d[cur_node] != INF)
+			continue;
+ 
+		d[cur_node] = cur_dis;
+		p[cur_node] = cur_prev_node;
+ 
+		for (int i = 0; i < adj_list[cur_node].size(); i++)
+		{
+			int next_node = adj_list[cur_node][i].first;
+			int weight = adj_list[cur_node][i].second;
+			if (d[next_node] != INF)
+				continue;
+			nodes_q.push({ cur_dis + weight ,{ next_node, cur_node } });
+		}
+	}
+	return d;
+}
+double Closeness_Cent(int source, vector <vector <pair <int, int> > > &adj_list2)
+{
+	vector<int> distance = shortest_path(source, adj_list2);
+	double s_dis = 0;
+	double N = 0;
+	vector<int>::iterator i;
+	for (i= distance.begin(); i!= distance.end(); i++)
+	{
+		s_dis += *i;
+		N++;
+	}
+	double res = (N - 1) / (s_dis);
+	return res;
+}
+void addEdge(int u, int v, int w, vector <vector <pair <int, int> > > &a)
+{
+	a[u].push_back({ v, w });
+	a[v].push_back({ u, w });
+}
+/*void read_graph(int m)
+{
+	int u, v, w;
+	for (int i = 0;i < m;i++)
+	{
+		cin >> u >> v >> w;
+		adj_list1[u].push_back({ v, w });
+		adj_list1[v].push_back({ u, w });
+	}
+ 
+}*/
+ 
+int main()
+{
+	int n_nodes, n_edges,x,y,z;
+	cin >> n_nodes >> n_edges;
+	//read_graph(n_edges);
+	vector<vector <pair <int, int> > > adj_list1(n_nodes, vector <pair <int, int> >());
+	for (int i = 0;i < n_edges;i++)
+	{
+		cin >> x >> y >> z;
+		addEdge(x, y,z, adj_list1);
+	}
+	for (int i = 0; i < n_nodes; i++)
+	{
+		double centrality = Closeness_Cent(i, adj_list1);
+		cout << setprecision(12) << fixed << centrality << endl;	
+	}
+	//system("pause");
+	return 0;
+}
